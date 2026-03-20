@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+yt-dlp
+demucs
+openai-whisper
+python-docx
