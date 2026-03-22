@@ -10,6 +10,6 @@ def version_lyrics(pt_text):
         if not words:
             out.append("")
             continue
-        out.append(" ".join(["la"] * len(words)))  # placeholder rhythm
+        out.append(" ".join(words))  # TEMP preserve structure
 
     return "\n".join(out)

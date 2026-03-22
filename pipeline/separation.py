@@ -13,7 +13,8 @@ def separate_audio(path):
     subprocess.run(f"demucs --two-stems=vocals {path}", shell=True, check=True)
 
     base = "separated/htdemucs"
-    folder = os.listdir(base)[0]
+    folders = sorted(os.listdir(base), key=lambda x: os.path.getmtime(os.path.join(base, x)), reverse=True)
+    folder = folders[0]
 
     return {
         "vocals": f"{base}/{folder}/vocals.wav",

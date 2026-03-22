@@ -4,7 +4,7 @@ import zipfile
 def export_outputs(final_path, stems):
     mp3_path = final_path.replace(".wav", ".mp3")
 
-    os.system(f'ffmpeg -i {final_path} {mp3_path}')
+    os.system(f'ffmpeg -y -i "{final_path}" "{mp3_path}"')
 
     return {
         "wav": final_path,

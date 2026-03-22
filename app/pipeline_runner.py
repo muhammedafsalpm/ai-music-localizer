@@ -59,15 +59,18 @@ def run_pipeline(job_id, url, input_path):
 
 def resume_pipeline(job_id):
     job = get_job(job_id)
-    stems = job["outputs"]["stems"]
+    stems = job.get("outputs", {}).get("stems")
+
+    if not stems:
+        raise Exception("Missing stems in job state")
 
     update_status(job_id, "singing_generation")
 
     # STEP: user must provide singing
-    synth = "data/processed/synth.wav"
+    synth = generate_singing()
 
-    if not os.path.exists(synth):
-        raise Exception("Missing generated singing file!")
+    if not os.path.exists("data/processed/synth.wav"):
+        raise Exception("Synth file missing")
 
     update_status(job_id, "voice_conversion")
     generated = run_voice_conversion(synth)

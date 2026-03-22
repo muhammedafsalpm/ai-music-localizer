@@ -11,7 +11,7 @@ def extract_lyrics(vocal_path):
         shell=True,
         check=True
     )
-    return "lyrics.txt"
+    return f"{vocal_path}.txt"
 
 
 from pipeline.versioning import version_lyrics
