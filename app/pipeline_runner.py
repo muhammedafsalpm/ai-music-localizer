@@ -46,32 +46,41 @@ def run_pipeline(job_id, url, input_path):
         update_status(job_id, "creating_docx")
         docx_path = create_docx(lyrics_txt)
 
-        update_status(job_id, "waiting_for_lyrics_edit")
-        # USER MUST EDIT DOCX HERE
+        update_status(job_id, "waiting_for_lyrics_edit", {
+            "docx": docx_path,
+            "stems": stems
+        })
 
-        # after editing, pipeline continues manually
-
-        update_status(job_id, "preprocessing")
-        clean_vocals = preprocess_vocals(stems["vocals"])
-
-        update_status(job_id, "singing_generation")
-        synth = generate_singing(docx_path, stems["vocals"])
-
-        update_status(job_id, "voice_conversion")
-        generated = run_voice_conversion(synth)
-
-        update_status(job_id, "mixing")
-        final = align_and_mix(generated, stems["instrumental"])
-
-        update_status(job_id, "exporting")
-        outputs = export_outputs(final, stems)
-
-        zip_path = create_zip(outputs)
-
-        update_status(job_id, "completed", {"zip": zip_path})
+        return  # HARD STOP (MANDATORY)
 
     except Exception as e:
         update_status(job_id, f"failed: {str(e)}")
+
+
+def resume_pipeline(job_id):
+    job = get_job(job_id)
+    stems = job["outputs"]["stems"]
+
+    update_status(job_id, "singing_generation")
+
+    # STEP: user must provide singing
+    synth = "data/processed/synth.wav"
+
+    if not os.path.exists(synth):
+        raise Exception("Missing generated singing file!")
+
+    update_status(job_id, "voice_conversion")
+    generated = run_voice_conversion(synth)
+
+    update_status(job_id, "mixing")
+    final = align_and_mix(generated, stems["instrumental"])
+
+    update_status(job_id, "exporting")
+    outputs = export_outputs(final, stems)
+
+    zip_path = create_zip(outputs)
+
+    update_status(job_id, "completed", {"zip": zip_path})
 
 
 def get_status(job_id):

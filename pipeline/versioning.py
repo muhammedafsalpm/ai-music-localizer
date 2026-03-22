@@ -1,18 +1,15 @@
 def version_lyrics(pt_text):
     """
-    Production rule:
-    - preserve syllable count
-    - preserve rhythm
-    - approximate meaning
+    MUST preserve rhythm & syllables
     """
+    lines = pt_text.split("\n")
+    out = []
 
-    pt_lines = pt_text.split("\n")
-    en_lines = []
+    for l in lines:
+        words = l.split()
+        if not words:
+            out.append("")
+            continue
+        out.append(" ".join(["la"] * len(words)))  # placeholder rhythm
 
-    for line in pt_lines:
-        words = line.split()
-
-        # basic rhythm-preserving placeholder
-        en_lines.append(" ".join(["la"] * len(words)))
-
-    return "\n".join(en_lines)
+    return "\n".join(out)

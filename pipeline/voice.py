@@ -1,15 +1,15 @@
 import os
 
 def run_voice_conversion(vocal_path):
-    model_path = "models/rvc_model/giramille_voice.pth"
+    model = "models/rvc_model/giramille_voice.pth"
 
-    if not os.path.exists(model_path):
-        raise Exception("RVC model not found!")
+    if not os.path.exists(model):
+        raise Exception("Model missing")
 
-    print("⚠️ Run RVC manually using this model:")
-    print(model_path)
+    print("Run RVC using:")
+    print("Model:", model)
     print("Input:", vocal_path)
 
-    input("After generating output, press ENTER...")
+    input("Press ENTER after conversion...")
 
     return "data/processed/generated_vocals.wav"

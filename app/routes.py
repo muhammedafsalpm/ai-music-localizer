@@ -29,6 +29,12 @@ async def upload_and_process(file: UploadFile = File(...)):
 def status(job_id: str):
     return get_status(job_id)
 
+@router.post("/resume/{job_id}")
+def resume(job_id: str):
+    from app.pipeline_runner import resume_pipeline
+    resume_pipeline(job_id)
+    return {"status": "resumed"}
+
 @router.get("/download/{job_id}")
 def download(job_id: str):
     job = get_status(job_id)
