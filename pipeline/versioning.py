@@ -10,6 +10,6 @@ def version_lyrics(pt_text):
         if not words:
             out.append("")
             continue
-        out.append(" ".join(["sing"] * len(words)))
+        out.append(" ".join(["jump"] * len(words)))
 
     return "\n".join(out)

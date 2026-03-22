@@ -51,7 +51,8 @@ def run_pipeline(job_id, url, input_path):
 
         update_status(job_id, "waiting_for_lyrics_edit", {
             "docx": docx_path,
-            "stems": stems
+            "stems": stems,
+            "stage": "waiting"
         })
 
         return  # HARD STOP (MANDATORY)
@@ -62,7 +63,9 @@ def run_pipeline(job_id, url, input_path):
 
 def resume_pipeline(job_id):
     job = get_job(job_id)
-    stems = job.get("outputs", {}).get("stems")
+    data = job.get("outputs", {})
+
+    stems = data.get("stems")
 
     if not stems:
         raise Exception("Missing stems in job state")
@@ -80,6 +83,9 @@ def resume_pipeline(job_id):
 
     update_status(job_id, "voice_conversion")
     generated = run_voice_conversion(clean)
+
+    if not os.path.exists("data/processed/generated_vocals.wav"):
+        raise Exception("RVC output missing")
 
     update_status(job_id, "mixing")
     final = align_and_mix(generated, stems["instrumental"])
