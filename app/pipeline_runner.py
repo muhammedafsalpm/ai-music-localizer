@@ -1,6 +1,9 @@
 import threading
 import os
 import subprocess
+import traceback
+import os
+import subprocess
 from jobs.job_store import create_job, update_status, get_job
 
 from pipeline.download import download_audio
@@ -54,7 +57,7 @@ def run_pipeline(job_id, url, input_path):
         return  # HARD STOP (MANDATORY)
 
     except Exception as e:
-        update_status(job_id, f"failed: {str(e)}")
+        update_status(job_id, f"failed: {str(e)}\n{traceback.format_exc()}")
 
 
 def resume_pipeline(job_id):
@@ -69,11 +72,14 @@ def resume_pipeline(job_id):
     # STEP: user must provide singing
     synth = generate_singing()
 
-    if not os.path.exists("data/processed/synth.wav"):
+    if not os.path.exists(synth):
         raise Exception("Synth file missing")
 
+    update_status(job_id, "preprocessing")
+    clean = preprocess_vocals(synth)
+
     update_status(job_id, "voice_conversion")
-    generated = run_voice_conversion(synth)
+    generated = run_voice_conversion(clean)
 
     update_status(job_id, "mixing")
     final = align_and_mix(generated, stems["instrumental"])
