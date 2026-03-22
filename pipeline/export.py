@@ -6,11 +6,14 @@ def export_outputs(final_path, stems):
 
     os.system(f'ffmpeg -y -i "{final_path}" "{mp3_path}"')
 
+    generated_vocals = "data/processed/generated_vocals.wav"
+
     return {
         "wav": final_path,
         "mp3": mp3_path,
         "vocals": stems["vocals"],
-        "instrumental": stems["instrumental"]
+        "instrumental": stems["instrumental"],
+        "generated_vocals": generated_vocals
     }
 
 
