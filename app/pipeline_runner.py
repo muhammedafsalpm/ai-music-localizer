@@ -10,6 +10,7 @@ from pipeline.preprocess import preprocess_vocals
 from pipeline.voice import run_voice_conversion
 from pipeline.align_mix import align_and_mix
 from pipeline.export import export_outputs, create_zip
+from pipeline.singing import generate_singing
 
 
 def run_pipeline_async(url=None, input_path=None):
@@ -53,8 +54,11 @@ def run_pipeline(job_id, url, input_path):
         update_status(job_id, "preprocessing")
         clean_vocals = preprocess_vocals(stems["vocals"])
 
+        update_status(job_id, "singing_generation")
+        synth = generate_singing(docx_path, stems["vocals"])
+
         update_status(job_id, "voice_conversion")
-        generated = run_voice_conversion(clean_vocals)
+        generated = run_voice_conversion(synth)
 
         update_status(job_id, "mixing")
         final = align_and_mix(generated, stems["instrumental"])
